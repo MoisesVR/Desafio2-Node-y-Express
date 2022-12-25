@@ -44,3 +44,31 @@ app.post("/canciones", (req,res) =>{
         res.send({ "Mensaje":"Debe llenar todos los campos"})
     }
 })
+
+/* Devuelve todas las canciones */
+app.get("/canciones", (req,res) => {
+    const repertorio = JSON.parse(fs.readFileSync("repertorio.json"))
+    res.send(repertorio)
+})
+
+/* Actualiza el repertorio */
+app.put("/canciones/:id",(req,res) => {
+    const cancion = req.body
+    const cancionId = parseInt(req.params.id)
+    const repertorio = JSON.parse(fs.readFileSync("repertorio.json"))
+    const cancionEncontrada = repertorio.filter((cancion) => cancion.id === cancionId)
+    if(cancionEncontrada.length === 0){
+        res.status(404)
+        res.send()
+        return
+    }
+    const repertorioActualizado = repertorio.filter((cancion) => cancion.id !== cancionId)
+    repertorioActualizado.push({
+        id: cancion.id,
+        titulo: cancion.titulo,
+        artista: cancion.artista,
+        tono: cancion.tono
+    })
+    fs.writeFileSync("repertorio.json", JSON.stringify(repertorioActualizado))
+    res.send(cancion)
+})
