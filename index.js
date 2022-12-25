@@ -44,3 +44,9 @@ app.post("/canciones", (req,res) =>{
         res.send({ "Mensaje":"Debe llenar todos los campos"})
     }
 })
+
+/* Devuelve todas las canciones */
+app.get("/canciones", (req,res) => {
+    const repertorio = JSON.parse(fs.readFileSync("repertorio.json"))
+    res.send(repertorio)
+})
