@@ -72,3 +72,19 @@ app.put("/canciones/:id",(req,res) => {
     fs.writeFileSync("repertorio.json", JSON.stringify(repertorioActualizado))
     res.send(cancion)
 })
+
+/* Elimina una cancion */
+app.delete("/canciones/:id",(req,res) => {
+    const cancionId = parseInt(req.params.id)
+    const repertorio = JSON.parse(fs.readFileSync("repertorio.json"))
+    const cancionEncontrada = repertorio.filter((cancion) => cancion.id === cancionId)
+    if(cancionEncontrada.length === 0){
+        res.status(404)
+        res.send({"Mensaje": "La cancion no existe"})
+        return
+    }
+    const repertorioActualizado = repertorio.filter((cancion) => cancion.id !== cancionId)
+    fs.writeFileSync("repertorio.json", JSON.stringify(repertorioActualizado))
+    res.status(200)
+    res.send({ "Mensaje":"La cancion fue eliminada"})
+})
